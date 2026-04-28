@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.me {
+  background-image: url(./assets/hero-1.jpg);
+  background-repeat: no-repeat;
+  width: 100%;
+
+  background-position: center;
+}
