@@ -8,7 +8,7 @@ const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [caseNumber, setCaseNumber] = useState("");
-  const [notification, setNotification] = useState("");
+  const [notification, setNotification] = useState(null);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
@@ -27,12 +27,23 @@ const Dashboard = () => {
 
   const handleSubmitCase = (e) => {
     e.preventDefault();
-    if (caseNumber.trim()) {
-      setNotification(
-        "Due to the discrepancies on the part of the beneficiary or the executor, the beneficiary has now been charged with a fine of $33,000 before authorisation is given for release of funds or a 1-year proof that beneficiaries in person of Tommy Hendrickson and Becky Hendrickson have been in an in-person romantic relationship."
-      );
-      setShowModal(false);
+    const cleanCase = caseNumber.trim().toUpperCase();
+    
+    if (cleanCase === "HEND-2594-FR-OH") {
+      setNotification({
+        type: "error",
+        message: "Due to the discrepancies on the part of the beneficiary or the executor, the beneficiary has now been charged with a fine of $33,000 before authorisation is given for release of funds or a 1-year proof that beneficiaries in person of Tommy Hendrickson and Becky Hendrickson have been in an in-person romantic relationship.",
+        note: "Note: This case is exclusive. For inquiries, please contact your appointed executor immediately."
+      });
+    } else {
+      setNotification({
+        type: "warning",
+        message: "The case number entered could not be found in our central records. Please verify the number and try again, or contact the clerk's office for assistance.",
+        note: "Reference: System could not locate record " + cleanCase
+      });
     }
+    setCaseNumber("");
+    setShowModal(false);
   };
 
   return (
@@ -119,24 +130,36 @@ const Dashboard = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 md:-mt-16 relative z-10 pb-20">
         {/* Notification Alert */}
         {notification && (
-          <div className="mb-10 bg-white border-l-[12px] border-red-600 shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-6 md:p-10 rounded-2xl animate-in slide-in-from-top duration-500">
+          <div className={`mb-10 bg-white border-l-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-6 md:p-10 rounded-2xl animate-in slide-in-from-top duration-500 ${
+            notification.type === 'error' ? 'border-red-600' : 'border-yellow-500'
+          }`}>
             <div className="flex flex-col md:flex-row items-start gap-6">
-              <div className="bg-red-100 p-4 rounded-full">
-                <span className="text-4xl">⚠️</span>
+              <div className={`p-4 rounded-full ${
+                notification.type === 'error' ? 'bg-red-100' : 'bg-yellow-100'
+              }`}>
+                <span className="text-4xl">{notification.type === 'error' ? '⚠️' : '🔍'}</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-xl md:text-3xl font-black text-red-600 mb-4 uppercase tracking-tighter">Critical Case Notification</h3>
-                <p className="text-gray-900 text-base md:text-xl leading-relaxed font-bold italic bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                  "{notification}"
+                <h3 className={`text-xl md:text-3xl font-black mb-4 uppercase tracking-tighter ${
+                  notification.type === 'error' ? 'text-red-600' : 'text-yellow-700'
+                }`}>
+                  {notification.type === 'error' ? 'Critical Case Notification' : 'Search Result: Not Found'}
+                </h3>
+                <p className="text-gray-900 text-base md:text-xl leading-relaxed font-bold italic bg-gray-50 p-4 rounded-lg border border-gray-100">
+                  "{notification.message}"
                 </p>
-                <div className="mt-6 p-5 bg-blue-50 rounded-xl border border-blue-100">
-                  <p className="text-sm md:text-base font-bold text-[#014481] flex items-center gap-2">
+                <div className={`mt-6 p-5 rounded-xl border ${
+                  notification.type === 'error' ? 'bg-blue-50 border-blue-100' : 'bg-gray-100 border-gray-200'
+                }`}>
+                  <p className={`text-sm md:text-base font-bold flex items-center gap-2 ${
+                    notification.type === 'error' ? 'text-[#014481]' : 'text-gray-600'
+                  }`}>
                     <span className="text-xl">ℹ️</span>
-                    Note: This case is exclusive. For inquiries, please contact your appointed executor immediately.
+                    {notification.note}
                   </p>
                 </div>
                 <button 
-                  onClick={() => setNotification("")}
+                  onClick={() => setNotification(null)}
                   className="mt-8 w-full md:w-auto px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-bold text-gray-700 transition-colors"
                 >
                   Close Notification
