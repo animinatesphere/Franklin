@@ -153,9 +153,9 @@ const Home = () => {
             <button className="bg-[#1959A6] text-white text-[16px] sm:text-[24px] text-center p-3 w-24 sm:w-40 h-12 sm:h-20 font-extrabold rounded-[5px]">
               Events
             </button>
-            <button className="bg-[#1959A6] text-white text-[16px] sm:text-[24px] text-center p-3 w-24 sm:w-40 h-12 sm:h-20 font-extrabold rounded-[5px]">
+            <Link to="/login" className="bg-[#1959A6] text-white text-[16px] sm:text-[24px] flex items-center justify-center p-3 w-24 sm:w-40 h-12 sm:h-20 font-extrabold rounded-[5px]">
               Login
-            </button>
+            </Link>
           </div>
           {/* end  goat */}
         </div>
